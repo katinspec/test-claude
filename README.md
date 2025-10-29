@@ -59,13 +59,71 @@ Claude Code web UI provides a browser-based coding experience where you can dele
 ## Testing Notes & Observations
 
 ### Known Limitations
-- **GitHub CLI not available**: The `gh` command is not available in the Claude Code web UI environment, which means Claude cannot directly fetch PR/MR comments or issue details. Users need to manually provide this information by copying and pasting comments or descriptions.
-  - **Impact**: When asked to "follow up on MR comments," Claude cannot automatically retrieve them and must ask the user to share the feedback
-  - **Workaround**: Copy the MR/PR comments and paste them directly in your message to Claude
+
+Understanding these limitations helps set realistic expectations when working with Claude Code web UI:
+
+#### GitHub CLI & API Limitations
+- **No GitHub CLI (`gh`) available**: The `gh` command is not available in the environment
+  - ❌ Cannot fetch PR/MR comments or descriptions
+  - ❌ Cannot fetch issue details or comments
+  - ❌ Cannot create PRs programmatically (Claude pushes branches; you create PR via GitHub UI)
+  - ❌ Cannot merge PRs using `gh pr merge`
+  - ❌ Cannot approve PRs or add review comments
+  - ❌ Cannot manage issues (create, close, label, assign)
+  - ❌ Cannot trigger or manage GitHub Actions workflows
+  - ❌ Cannot create or manage releases
+  - **Workaround**: Manually copy/paste PR comments, issue descriptions, or use GitHub web interface for these operations
+
+#### Git Branch & Push Restrictions
+- **Cannot push to main/master branches directly**: Security restriction returns HTTP 403 error
+  - ❌ `git push origin main` will fail with "HTTP 403" error
+  - ❌ Cannot merge branches locally and push to main
+  - **Why**: Prevents accidental or unauthorized changes to protected branches
+  - **Workaround**: Claude pushes to feature branches; merge PRs through GitHub UI
+
+- **Branch naming requirements**: Can only push to branches with specific naming pattern
+  - ✅ Branch must start with `claude/`
+  - ✅ Branch must end with matching session ID (e.g., `claude/feature-name-011CUajSi7hBjiq3bi3Pj7MQ`)
+  - ❌ Pushing to other branch names returns HTTP 403 error
+  - **Why**: Session-specific branch isolation for security
+
+#### Interactive Git Operations
+- **No interactive git commands**: Commands requiring user input are not supported
+  - ❌ `git rebase -i` (interactive rebase)
+  - ❌ `git add -i` (interactive staging)
+  - ❌ `git add -p` (patch mode)
+  - **Why**: No TTY/interactive terminal available in sandbox environment
+  - **Workaround**: Use non-interactive alternatives or manual git commands
+
+#### Repository Administration
+- **No repository admin capabilities**: Cannot modify repository settings
+  - ❌ Cannot manage collaborators or permissions
+  - ❌ Cannot modify branch protection rules
+  - ❌ Cannot change repository settings (visibility, features, etc.)
+  - ❌ Cannot manage webhooks or deploy keys
+  - **Workaround**: Use GitHub web interface for administrative tasks
+
+#### What DOES Work Well
+- ✅ Creating and editing files
+- ✅ Reading and analyzing code
+- ✅ Committing changes with proper messages
+- ✅ Pushing to feature branches (with `claude/` prefix)
+- ✅ Creating commits with co-author attribution
+- ✅ Running git status, diff, log commands
+- ✅ Creating and switching branches
+- ✅ Fetching and pulling from remote
+- ✅ Handling merge conflicts (non-interactive)
+- ✅ Web searches for documentation and best practices
+- ✅ Multi-step task execution with proper planning
 
 ### This Repository's Testing Focus
 This repository serves as a testbed to document and validate Claude Code web UI functionality, including:
-- Basic file operations (create, read, update)
-- Git operations (commit, push, branch management)
-- Following feedback and iterating on changes
-- Identifying environment limitations and workarounds
+- ✅ Basic file operations (create, read, update, delete)
+- ✅ Git operations (commit, push to feature branches, branch management)
+- ✅ Following feedback and iterating on changes
+- ✅ Identifying environment limitations and workarounds
+- ✅ Documentation of real-world usage patterns
+- ❌ PR merging (requires GitHub UI)
+- ❌ Direct main branch updates (requires GitHub PR workflow)
+- ❌ Interactive git operations
+- ❌ GitHub CLI-dependent features

@@ -55,3 +55,17 @@ Claude Code web UI provides a browser-based coding experience where you can dele
 - "Create a README with setup instructions"
 - "Fix TypeScript errors in the components folder"
 - "Add GitHub Actions for automated testing"
+
+## Testing Notes & Observations
+
+### Known Limitations
+- **GitHub CLI not available**: The `gh` command is not available in the Claude Code web UI environment, which means Claude cannot directly fetch PR/MR comments or issue details. Users need to manually provide this information by copying and pasting comments or descriptions.
+  - **Impact**: When asked to "follow up on MR comments," Claude cannot automatically retrieve them and must ask the user to share the feedback
+  - **Workaround**: Copy the MR/PR comments and paste them directly in your message to Claude
+
+### This Repository's Testing Focus
+This repository serves as a testbed to document and validate Claude Code web UI functionality, including:
+- Basic file operations (create, read, update)
+- Git operations (commit, push, branch management)
+- Following feedback and iterating on changes
+- Identifying environment limitations and workarounds
